@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha uma opção!</title>
+    <style>
+        body {
+            background-color: #271b1b;
+            color: #faf7f6;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.theme-edi {
+            background-color: #1b2421;
+        }
+        .container {
+            text-align: center;
+        }
+        .title {
+            font-size: 32px;
+            color: #ff9898;
+            margin-bottom: 20px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .title.theme-edi {
+            color: #a1f2d4;
+        }
+        .settings-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .settings-container .info-button {
+            background-color: #ff9898;
+            color: #271b1b;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .settings-container .info-button:hover {
+            background-color: #e27878;
+        }
+        .settings-container .info-button.theme-edi {
+            background-color: #a1f2d4;
+            color: #271b1b;
+        }
+        .settings-container .info-button.theme-edi:hover {
+            background-color: #8fdbf0;
+        }
+        .settings-container label {
+            font-size: 20px;
+            color: #ff9898;
+            transition: color 0.3s;
+            font-weight: bold;
+        }
+        .settings-container label.theme-edi {
+            color: #a1f2d4;
+        }
+        .settings-container .close-button {
+            background: none;
+            border: none;
+            color: #ff9898;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .settings-container .close-button:hover {
+            color: #fff;
+        }
+        .settings-container .close-button.theme-edi {
+            color: #a1f2d4;
+        }
+        .settings-container .close-button.theme-edi:hover {
+            color: #d1f3e0;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            border: 2px solid #faf7f6;
+            border-radius: 30px;
+            transition: border-color 0.3s;
+        }
+        .switch.theme-edi {
+            border-color: #a1f2d4;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #271b1b;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .slider.theme-edi {
+            background-color: #1b2421;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: #ff9898;
+            transition: .4s;
+        }
+        .slider.theme-edi:before {
+            background-color: #a1f2d4;
+        }
+        input:checked + .slider {
+            background-color: #271b1b;
+        }
+        input:checked + .slider.theme-edi {
+            background-color: #1b2421;
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .button {
+            background-color: #ff9898;
+            color: #271b1b;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: transform 0.2s, background-color 0.3s, color 0.3s;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .button.theme-edi {
+            background-color: #a1f2d4;
+            color: #271b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <label for="themeSwitch" class="theme-edi-label">Tema Edi</label>
+        <label class="switch">
+            <input type="checkbox" id="themeSwitch" onclick="toggleThemeEdi()">
+            <span class="slider"></span>
+        </label>
+        <button class="close-button" onclick="closePage()">✖</button>
+    </div>
+    <div class="container">
+        <h1 class="title">Escolha uma opção!</h1>
+        <button class="button" onclick="window.location.href='https://startflix.vip/'">Filmes/Séries</button>
+        <button class="button" onclick="window.location.href='https://doramogo.com/'">Doramas</button>
+        <button class="button" onclick="window.location.href='https://unisa.blog/assuntos-para-o-vestibular/">Estudos</button>
+        <button class="button" onclick="window.location.href='http://www.youtube.com/'">Lazer</button>
+        <button class="button" onclick="window.location.href='https://www.youtube.com/watch?v=PRkUfWyq0xY&list=PL5FuBlqhBH6rBy9G1hISccCkYk04qEQo8'">Gameplays</button>
+        <button class="button" onclick="window.location.href='https://www.youtube.com/results?search_query=andando+pelo+japao'">Japão</button>
+        <button class="button" onclick="window.location.href='https://www.youtube.com/@cdossos'">Criminal</button>
+    </div>
+
+    <script>
+        function closePage() {
+            window.location.href = "diversaocell.html";
+        }
+
+        function toggleThemeEdi() {
+            const body = document.body;
+            const title = document.querySelector('.title');
+            const closeButton = document.querySelector('.close-button');
+            const switchLabel = document.querySelector('.switch');
+            const buttons = document.querySelectorAll('.button');
+            const themeEdiLabel = document.querySelector('.theme-edi-label');
+            const slider = document.querySelector('.slider');
+
+            body.classList.toggle('theme-edi');
+            title.classList.toggle('theme-edi');
+            closeButton.classList.toggle('theme-edi');
+            switchLabel.classList.toggle('theme-edi');
+            themeEdiLabel.classList.toggle('theme-edi');
+            slider.classList.toggle('theme-edi');
+            buttons.forEach(button => button.classList.toggle('theme-edi'));
+        }
+    </script>
+</body>
+</html>
+
