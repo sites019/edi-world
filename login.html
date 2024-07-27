@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo(a)!</title>
+    <style>
+        body {
+            background-color: #271b1b;
+            color: #ff9898;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        h1 {
+            color: #ff9898;
+            font-size: 48px;
+        }
+        h2 {
+            color: #ff9898;
+            margin-top: -10px;
+            margin-bottom: 30px;
+        }
+        .button {
+            background-color: #ff9898;
+            color: #271b1b;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: scale(1.1);
+        }
+        .info-button, .settings-button {
+            position: absolute;
+            background-color: #ff9898;
+            color: #271b1b;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        .info-button {
+            top: 10px;
+            left: 10px;
+        }
+        .settings-button {
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .info-container, .settings-container {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background-color: #ff9898;
+            color: #271b1b;
+            border-radius: 10px;
+            padding: 20px;
+            width: 200px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            gap: 20px;
+        }
+        .settings-container {
+            left: auto;
+            right: 10px;
+            width: 22%;
+            max-width: 135px;
+            top: 60px;
+        }
+        .fade-in {
+            display: block;
+            opacity: 1;
+        }
+        .fade-out {
+            opacity: 0;
+        }
+        .login-container {
+            display: none;
+            position: fixed;
+            top: 29%;
+            left: 37%;
+            background-color: #271b1b;
+            color: #ff9898;
+            border-radius: 10px;
+            padding: 30px;
+            width: 350px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            animation: tvOn 0.5s forwards;
+            z-index: 1001;
+        }
+        .login-container.tv-off {
+            animation: tvOff 0.5s forwards;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff9898;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            filter: blur(5px);
+        }
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ff9898;
+            border-radius: 25px;
+            background-color: #271b1b;
+            color: #ff9898;
+        }
+        .input-error {
+            border-color: #ff0000;
+            background-color: #1b2421;
+        }
+        .login-button {
+            background-color: #ff9898;
+            color: #271b1b;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .login-button:hover {
+            transform: scale(1.1);
+        }
+        .error-message {
+            color: #ff0000;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .settings-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .settings-option label {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #271b1b;
+            transition: .4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: #ff9898;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #271b1b;
+        }
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+        @keyframes tvOn {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+        @keyframes tvOff {
+            0% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+        }
+
+        /* Estilo para o tema Edi */
+        .theme-edi {
+            background-color: #1b2421;
+            color: #a1f2d4;
+        }
+        .theme-edi h1, .theme-edi h2 {
+            color: #a1f2d4;
+        }
+        .theme-edi .button {
+            background-color: #a1f2d4;
+            color: #1b2421;
+        }
+        .theme-edi .info-button, .theme-edi .settings-button {
+            background-color: #a1f2d4;
+            color: #1b2421;
+        }
+        .theme-edi .info-container, .theme-edi .settings-container {
+            background-color: #a1f2d4;
+            color: #1b2421;
+        }
+        .theme-edi .login-container {
+            background-color: #1b2421;
+            color: #a1f2d4;
+        }
+        .theme-edi .close-button {
+            color: #a1f2d4;
+        }
+        .theme-edi input[type="text"], .theme-edi input[type="password"] {
+            border: 2px solid #a1f2d4;
+            background-color: #1b2421;
+            color: #a1f2d4;
+        }
+        .theme-edi .login-button {
+            background-color: #a1f2d4;
+            color: #1b2421;
+        }
+        .theme-edi .switch .slider {
+            background-color: #1b2421;
+        }
+        .theme-edi .switch .slider:before {
+            background-color: #a1f2d4;
+        }
+    </style>
+</head>
+<body>
+    <button class="info-button" onclick="toggleInfo()">i</button>
+    <div class="info-container" id="infoContainer">
+        <p><strong>Sobre o Projeto:</strong></p>
+        <p><strong>Versão:</strong> 1.0, Julho</p>
+        <p><strong>Desenvolvedores:</strong> Riq & Amanda</p>
+        <p><strong>Construído em:</strong> Bash, HTML Group e Python</p>
+        <p><strong>Bibliotecas utilizadas:</strong> GTK</p>
+        <a href="about.html" style="color: #271b1b; text-align: center;">Sobre o Projeto!</a>
+    </div>
+    <button class="settings-button" onclick="toggleSettings()">⚙</button>
+    <div class="settings-container" id="settingsContainer">
+        <div class="settings-option">
+            <label for="themeEdiSwitch">Tema Edi:</label>
+            <label class="switch">
+                <input type="checkbox" id="themeEdiSwitch" onclick="toggleThemeEdi()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    <h1>Bem-vindo(a)!</h1>
+    <h2>Escolha uma opção:</h2>
+    <button class="button" onclick="openLogin()">Login</button>
+    <div class="login-container" id="loginContainer">
+        <button class="close-button" onclick="closeLogin()">✖</button>
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Usuário" required>
+            <input type="password" id="password" placeholder="Senha" required>
+            <button type="submit" class="login-button">Entrar</button>
+            <div class="error-message" id="errorMessage" style="display: none;">Usuário ou senha inválidos!</div>
+        </form>
+    </div>
+    <div class="overlay" id="overlay" onclick="closeLogin()"></div>
+
+    <script>
+        function toggleInfo() {
+            var infoContainer = document.getElementById('infoContainer');
+            if (infoContainer.classList.contains('fade-in')) {
+                infoContainer.classList.remove('fade-in');
+                infoContainer.classList.add('fade-out');
+                setTimeout(() => {
+                    infoContainer.style.display = 'none';
+                }, 500);
+            } else {
+                infoContainer.style.display = 'block';
+                setTimeout(() => {
+                    infoContainer.classList.remove('fade-out');
+                    infoContainer.classList.add('fade-in');
+                }, 10);
+            }
+        }
+
+        function toggleSettings() {
+            var settingsContainer = document.getElementById('settingsContainer');
+            if (settingsContainer.classList.contains('fade-in')) {
+                settingsContainer.classList.remove('fade-in');
+                settingsContainer.classList.add('fade-out');
+                setTimeout(() => {
+                    settingsContainer.style.display = 'none';
+                }, 500);
+            } else {
+                settingsContainer.style.display = 'block';
+                setTimeout(() => {
+                    settingsContainer.classList.remove('fade-out');
+                    settingsContainer.classList.add('fade-in');
+                }, 10);
+            }
+        }
+
+        function toggleThemeEdi() {
+            document.body.classList.toggle('theme-edi');
+        }
+
+        function openLogin() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closeLogin() {
+            var loginContainer = document.getElementById('loginContainer');
+            var overlay = document.getElementById('overlay');
+            loginContainer.classList.add('tv-off');
+            overlay.style.display = 'none';
+            setTimeout(() => {
+                loginContainer.style.display = 'none';
+                loginContainer.classList.remove('tv-off');
+                document.getElementById('loginForm').reset(); // Limpa os campos de entrada
+                document.getElementById('errorMessage').style.display = 'none'; // Remove a mensagem de erro
+                document.getElementById('username').classList.remove('input-error');
+                document.getElementById('password').classList.remove('input-error');
+            }, 500);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value.trim();
+            var password = document.getElementById('password').value.trim();
+            var validUsernames = ['Edi', 'edilene', 'Edilene', 'edi', 'edy', 'Edy'];
+            var validPasswords = ['jesus', 'Jesus', 'Deus', 'deus'];
+            var usernameInput = document.getElementById('username');
+            var passwordInput = document.getElementById('password');
+            var errorMessage = document.getElementById('errorMessage');
+            
+            if (validUsernames.includes(username) && validPasswords.includes(password)) {
+                window.location.href = 'edi.html';
+            } else {
+                errorMessage.style.display = 'block';
+                usernameInput.classList.add('input-error');
+                passwordInput.classList.add('input-error');
+                
+                // Limpa os campos de entrada e a mensagem de erro após 1 segundo
+                setTimeout(() => {
+                    usernameInput.value = '';
+                    passwordInput.value = '';
+                    errorMessage.style.display = 'none';
+                    usernameInput.classList.remove('input-error');
+                    passwordInput.classList.remove('input-error');
+                }, 1000);
+                
+                usernameInput.addEventListener('input', function() {
+                    errorMessage.style.display = 'none';
+                    usernameInput.classList.remove('input-error');
+                    passwordInput.classList.remove('input-error');
+                });
+                
+                passwordInput.addEventListener('input', function() {
+                    errorMessage.style.display = 'none';
+                    usernameInput.classList.remove('input-error');
+                    passwordInput.classList.remove('input-error');
+                });
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            var infoContainer = document.getElementById('infoContainer');
+            var settingsContainer = document.getElementById('settingsContainer');
+            var infoButton = document.querySelector('.info-button');
+            var settingsButton = document.querySelector('.settings-button');
+
+            if (infoContainer.style.display === 'block' && !infoContainer.contains(event.target) && !infoButton.contains(event.target)) {
+                toggleInfo();
+            }
+
+            if (settingsContainer.style.display === 'block' && !settingsContainer.contains(event.target) && !settingsButton.contains(event.target)) {
+                toggleSettings();
+            }
+        });
+    </script>
+</body>
+</html>

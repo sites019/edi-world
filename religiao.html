@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Religião</title>
+    <style>
+        body {
+            background-color: #271b1b;
+            color: #faf7f6;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: filter 0.3s;
+        }
+        body.theme-edi {
+            background-color: #1b2421;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        .title {
+            font-size: 32px;
+            color: #ff9898;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .title.theme-edi {
+            color: #a1f2d4;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ff9898;
+            border-radius: 25px;
+            background-color: #271b1b;
+            color: #ff9898;
+            font-size: 18px;
+        }
+        input[type="text"].theme-edi {
+            background-color: #1b2421;
+            color: #a1f2d4;
+            border-color: #a1f2d4;
+        }
+        .settings-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .settings-container .info-button {
+            background-color: #ff9898;
+            color: #271b1b;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .settings-container .info-button:hover {
+            background-color: #e27878;
+        }
+        .settings-container .info-button.theme-edi {
+            background-color: #a1f2d4;
+            color: #271b1b;
+        }
+        .settings-container .info-button.theme-edi:hover {
+            background-color: #8fdbf0;
+        }
+        .settings-container label {
+            font-size: 20px;
+            color: #ff9898;
+            transition: color 0.3s;
+            font-weight: bold;
+        }
+        .settings-container label.theme-edi {
+            color: #a1f2d4;
+        }
+        .settings-container .close-button {
+            background: none;
+            border: none;
+            color: #ff9898;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .settings-container .close-button:hover {
+            color: #fff;
+        }
+        .settings-container .close-button.theme-edi {
+            color: #a1f2d4;
+        }
+        .settings-container .close-button.theme-edi:hover {
+            color: #d1f3e0;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            border: 2px solid #faf7f6;
+            border-radius: 30px;
+            transition: border-color 0.3s;
+        }
+        .switch.theme-edi {
+            border-color: #a1f2d4;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #271b1b;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .slider.theme-edi {
+            background-color: #1b2421;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: #ff9898;
+            transition: .4s;
+        }
+        .slider.theme-edi:before {
+            background-color: #a1f2d4;
+        }
+        input:checked + .slider {
+            background-color: #271b1b;
+        }
+        input:checked + .slider.theme-edi {
+            background-color: #1b2421;
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .background-blur {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+        .background-blur.active {
+            display: block;
+        }
+        .suggestions {
+            position: absolute;
+            background-color: #271b1b;
+            border: 1px solid #ff9898;
+            border-radius: 5px;
+            margin-top: 5px;
+            width: calc(100% - 40px);
+            z-index: 100;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .suggestions.theme-edi {
+            background-color: #1b2421;
+            border-color: #a1f2d4;
+        }
+        .suggestions div {
+            padding: 10px;
+            cursor: pointer;
+            color: #ff9898;
+        }
+        .suggestions div:hover {
+            background-color: #383030;
+        }
+        .suggestions div.theme-edi {
+            color: #a1f2d4;
+        }
+        .suggestions div.theme-edi:hover {
+            background-color: #243e39;
+        }
+        .info-container {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 26%;
+            transform: translate(-50%, -50%);
+            background-color: #271b1b;
+            color: #faf7f6;
+            padding: 1px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            animation: tvOn 0.5s forwards;
+        }
+        .info-container.theme-edi {
+            background-color: #1b2421;
+        }
+        .info-container h2 {
+            color: #ff9898;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info-container h2.theme-edi {
+            color: #a1f2d4;
+        }
+        .info-container p {
+            color: #faf7f6;
+            margin-bottom: 20px;
+        }
+        .info-container p.version {
+            color: #ff9898;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .info-container p.version.theme-edi {
+            color: #a1f2d4;
+        }
+        .info-container.active {
+            display: block;
+        }
+        .info-container.tv-off {
+            animation: tvOff 0.5s forwards;
+        }
+        .info-container .btn-close {
+            background: none;
+            border: none;
+            color: #ff9898;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            transition: color 0.3s;
+        }
+        .info-container .btn-close:hover {
+            color: #fff;
+        }
+        .info-container .btn-close.theme-edi {
+            color: #a1f2d4;
+        }
+        .info-container .btn-close.theme-edi:hover {
+            color: #d1f3e0;
+        }
+        @keyframes tvOn {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+        @keyframes tvOff {
+            0% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <button class="info-button" onclick="toggleInfo()">i</button>
+        <label for="themeSwitch">Tema Edi</label>
+        <label class="switch">
+            <input type="checkbox" id="themeSwitch" onclick="toggleThemeEdi()">
+            <span class="slider"></span>
+        </label>
+        <button class="close-button" onclick="closePage()">✖</button>
+    </div>
+    <div class="container">
+        <h1 class="title">Escolha seu versículo de hoje!</h1>
+        <input type="text" id="verseSearch" oninput="filterVerses()" placeholder="Digite um livro da Bíblia...">
+        <div class="suggestions" id="suggestions"></div>
+    </div>
+    <div class="background-blur" id="backgroundBlur"></div>
+    <div class="info-container" id="infoContainer">
+        <h2>Versículos</h2>
+        <p>Escolha um versículo e tenha todos os dias uma passagem de um versículo dirferente para começar o dia inspirado e motivado!.</p>
+        <p class="version">Versão 1.0</p>
+        <button class="btn-close" onclick="toggleInfo()">✖</button>
+    </div>
+
+    <script>
+        const verses = {
+            "Mateus": [
+                "Mateus 5:9 - Bem-aventurados os pacificadores, pois serão chamados filhos de Deus.",
+            ],
+            "Marcos": [
+                "Marcos 10:27 - Jesus olhou para eles e respondeu: Para o homem é impossível, mas para Deus todas as coisas são possíveis.",
+            ],
+            "Lucas": [
+                "Lucas 1:37 - Pois nada é impossível para Deus.",
+            ],
+            "João": [
+                "João 14:6 - Respondeu Jesus: Eu sou o caminho, a verdade e a vida. Ninguém vem ao Pai, a não ser por mim.",
+            ],
+            "Romanos": [
+                "Romanos 5:8 - Mas Deus demonstra seu amor por nós: Cristo morreu em nosso favor quando ainda éramos pecadores."
+            ],
+            "Coríntios": [
+                "1 Coríntios 13:4 - O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha.",
+            ],
+            "Gálatas": [
+                "Gálatas 6:9 - E não nos cansemos de fazer o bem, pois no tempo próprio colheremos, se não desanimarmos.",
+            ],
+            "Efésios": [
+                "Efésios 6:11 - Vistam toda a armadura de Deus, para poderem ficar firmes contra as ciladas do Diabo.",
+            ],
+            "Filipenses": [
+                "Filipenses 4:13 - Tudo posso naquele que me fortalece.",
+            ],
+            "Colossenses": [
+                "Colossenses 3:23 - Tudo o que fizerem, façam de todo o coração, como para o Senhor, e não para os homens.",
+            ],
+            "Timóteo": [
+                "2 Timóteo 1:7 - Pois Deus não nos deu espírito de covardia, mas de poder, de amor e de equilíbrio.",
+            ],
+            "Hebreus": [
+                "Hebreus 11:1 - Ora, a fé é a certeza daquilo que esperamos e a prova das coisas que não vemos.",
+            ],
+            "Tiago": [
+                "Tiago 1:5 - Se algum de vocês tem falta de sabedoria, peça-a a Deus, que a todos dá livremente, de boa vontade; e lhe será concedida.",
+            ],
+            "Pedro": [
+                "1 Pedro 5:7 - Lancem sobre ele toda a sua ansiedade, porque ele tem cuidado de vocês.",
+            ],
+            "Judas": [
+                "Judas 1:22 - Tenham compaixão daqueles que estão em dúvida.",
+            ],
+            "Apocalipse": [
+                "Apocalipse 22:12 - Eis que venho em breve! A minha recompensa está comigo, e eu retribuirei a cada um de acordo com o que fez."
+            ]
+        };
+
+        const themeSwitch = document.getElementById('themeSwitch');
+        const body = document.body;
+        const infoButton = document.querySelector('.info-button');
+        const title = document.querySelector('.title');
+        const backgroundBlur = document.getElementById('backgroundBlur');
+        const suggestions = document.getElementById('suggestions');
+        const verseSearch = document.getElementById('verseSearch');
+        const infoContainer = document.getElementById('infoContainer');
+
+        function toggleThemeEdi() {
+            body.classList.toggle('theme-edi');
+            infoButton.classList.toggle('theme-edi');
+            title.classList.toggle('theme-edi');
+            suggestions.classList.toggle('theme-edi');
+            verseSearch.classList.toggle('theme-edi');
+            const switchSlider = document.querySelector('.slider');
+            switchSlider.classList.toggle('theme-edi');
+            const labels = document.querySelectorAll('label');
+            labels.forEach(label => {
+                label.classList.toggle('theme-edi');
+            });
+            infoContainer.classList.toggle('theme-edi');
+            const infoContainerH2 = infoContainer.querySelector('h2');
+            const infoContainerP = infoContainer.querySelectorAll('p');
+            infoContainerH2.classList.toggle('theme-edi');
+            infoContainerP.forEach(p => p.classList.toggle('theme-edi'));
+            const btnClose = infoContainer.querySelector('.btn-close');
+            btnClose.classList.toggle('theme-edi');
+            const suggestionsDivs = suggestions.querySelectorAll('div');
+            suggestionsDivs.forEach(div => div.classList.toggle('theme-edi'));
+            const closeButton = document.querySelector('.close-button');
+            closeButton.classList.toggle('theme-edi');
+        }
+
+        function filterVerses() {
+            const query = verseSearch.value.toLowerCase();
+            suggestions.innerHTML = '';
+            if (query) {
+                const filteredVerses = Object.keys(verses).filter(book => book.toLowerCase().includes(query));
+                filteredVerses.forEach(book => {
+                    const suggestion = document.createElement('div');
+                    suggestion.textContent = book;
+                    suggestion.onclick = () => showRandomVerse(book);
+                    suggestions.appendChild(suggestion);
+                });
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
+            }
+            const suggestionsDivs = suggestions.querySelectorAll('div');
+            suggestionsDivs.forEach(div => {
+                if (body.classList.contains('theme-edi')) {
+                    div.classList.add('theme-edi');
+                } else {
+                    div.classList.remove('theme-edi');
+                }
+            });
+        }
+
+        function showRandomVerse(book) {
+            const bookVerses = verses[book];
+            const randomVerse = bookVerses[Math.floor(Math.random() * bookVerses.length)];
+            alert(randomVerse);
+            suggestions.style.display = 'none';
+        }
+
+        function toggleInfo() {
+            if (infoContainer.classList.contains('active')) {
+                infoContainer.classList.add('tv-off');
+                setTimeout(() => {
+                    infoContainer.classList.remove('active', 'tv-off');
+                }, 500);
+                backgroundBlur.classList.remove('active');
+            } else {
+                infoContainer.classList.add('active');
+                backgroundBlur.classList.add('active');
+            }
+        }
+
+        function closePage() {
+            window.location.href = "edi.html";
+        }
+    </script>
+</body>
+</html>
+

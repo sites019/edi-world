@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarto da Edi</title>
+    <style>
+        body {
+            background-color: #271b1b;
+            color: #ff9898;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+            position: relative;
+        }
+        h1 {
+            color: #ff9898;
+            font-size: 30px;
+            transition: color 0.3s;
+        }
+        .settings-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .settings-option label {
+            font-size: 20px;
+            color: #ff9898;
+            transition: color 0.3s;
+            font-weight: bold;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            border: 2px solid #faf7f6;
+            border-radius: 30px;
+            transition: border-color 0.3s;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #271b1b;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: #ff9898;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #271b1b;
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .theme-edi {
+            background-color: #1b2421;
+            color: #a1f2d4;
+        }
+        .theme-edi h1 {
+            color: #a1f2d4;
+        }
+        .theme-edi .switch {
+            border-color: #a1f2d4;
+        }
+        .theme-edi .switch .slider {
+            background-color: #1b2421;
+        }
+        .theme-edi .switch .slider:before {
+            background-color: #a1f2d4;
+        }
+        .theme-edi .settings-option label {
+            color: #a1f2d4;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: #ff9898;
+            color: #271b1b;
+            font-size: 21px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s, color 0.3s;
+        }
+        .btn:hover {
+            background-color: #e27878;
+            transform: scale(1.1);
+        }
+        .theme-edi .btn {
+            background-color: #a1f2d4;
+            color: #1b2421;
+        }
+        .theme-edi .btn:hover {
+            background-color: #81dbc1;
+        }
+        .menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #271b1b;
+            color: #ff9898;
+            border-right: 3px solid #ff9898; /* Espessura reduzida */
+            transform: translateX(-100%);
+            transition: transform 0.3s ease, border-color 0.3s;
+            z-index: 1000; /* Garantir que o menu fique sobre o conteúdo */
+        }
+        .menu.theme-edi {
+            border-right-color: #a1f2d4;
+            background-color: #1b2421; /* Mudança de cor para o tema Edi */
+        }
+        .menu.active {
+            transform: translateX(0);
+        }
+        .menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu li {
+            padding: 51px 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .menu li:hover {
+            background-color: #3b2e2e;
+        }
+        .theme-edi .menu li:hover {
+            background-color: #25332e;
+        }
+        .menu li a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box; /* Garantir que o link ocupe toda a área do item */
+        }
+        .theme-edi .menu li a {
+            color: #a1f2d4; /* Mudança da cor das fontes para o tema Edi */
+        }
+        .toggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            cursor: pointer;
+            display: block;
+            height: calc(4px * 3 + 11px * 2);
+            transition: transform 0.3s;
+            z-index: 2000; /* Garantir que o botão fique sobre o conteúdo desfocado */
+            background-color: transparent; /* Remover qualquer fundo visível */
+        }
+        .bar {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: calc(4px / 2);
+            background: #ff9898;
+            opacity: 1;
+            transition: all 0.35s cubic-bezier(.5,-0.35,.35,1.5);
+        }
+        .theme-edi .bar {
+            background: #a1f2d4;
+        }
+        .bar--top {
+            bottom: calc(50% + 11px + 4px / 2);
+        }
+        .bar--middle {
+            top: calc(50% - 4px / 2);
+        }
+        .bar--bottom {
+            top: calc(50% + 11px + 4px / 2);
+        }
+        #checkbox {
+            display: none;
+        }
+        #checkbox:checked + .toggle .bar--top {
+            bottom: calc(50% - 4px / 2);
+            transform: rotate(135deg);
+        }
+        #checkbox:checked + .toggle .bar--middle {
+            opacity: 0;
+        }
+        #checkbox:checked + .toggle .bar--bottom {
+            top: calc(50% - 4px / 2);
+            transform: rotate(225deg);
+        }
+        #checkbox:checked ~ .menu {
+            transform: translateX(0);
+        }
+        #checkbox:checked ~ .toggle {
+            transform: translateX(250px);
+        }
+        .content-blur {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Escurecimento do fundo */
+            backdrop-filter: blur(5px); /* Efeito de desfoque */
+            transition: opacity 0.3s;
+            opacity: 0;
+            pointer-events: none; /* Ignorar eventos do mouse */
+            z-index: 500; /* Ficar abaixo do menu */
+        }
+        #checkbox:checked ~ .content-blur {
+            opacity: 1;
+            pointer-events: auto; /* Habilitar eventos do mouse quando a tela lateral estiver ativa */
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <label for="themeEdiSwitch">Tema Edi:</label>
+        <label class="switch">
+            <input type="checkbox" id="themeEdiSwitch" onclick="toggleThemeEdi()">
+            <span class="slider"></span>
+        </label>
+    </div>
+    <input type="checkbox" id="checkbox">
+    <label for="checkbox" class="toggle">
+        <div class="bar bar--top"></div>
+        <div class="bar bar--middle"></div>
+        <div class="bar bar--bottom"></div>
+    </label>
+    <div class="menu" id="menu">
+        <ul>
+            <li><a href="motivationcell.html">Motivação</a></li>         
+            <li><a href="diversaocell.html">Diversão</a></li>
+            <li><a href="religiaocell.html">Religião</a></li>
+            <li><a href="diariocell.html">Diário</a></li>
+        </ul>
+    </div>
+    <div class="content-blur"></div>
+    <h1>Bem-vinda ao seu mundo, Edi!</h1>
+    <button class="btn" onclick="toggleMenu()">Vasculhar o quarto!</button>
+
+    <script>
+        function toggleThemeEdi() {
+            document.body.classList.toggle('theme-edi');
+            document.getElementById('menu').classList.toggle('theme-edi');
+            document.querySelector('.toggle').classList.toggle('theme-edi');
+            document.querySelector('.btn').classList.toggle('theme-edi');
+        }
+
+        function toggleMenu() {
+            document.getElementById('checkbox').checked = !document.getElementById('checkbox').checked;
+        }
+    </script>
+</body>
+</html>
+
+
